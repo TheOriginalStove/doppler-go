@@ -1,7 +1,14 @@
 // package doppler provices the bindings for the Doppler REST APIs.
 package doppler
 
-import "net/http"
+import (
+	"net/http"
+	"net/url"
+	"sync"
+	"time"
+
+	"golang.org/x/time/rate"
+)
 
 const (
 	// APIVersion is the supported API version.
@@ -25,4 +32,90 @@ type Doppler struct {
 	Project     string
 	Environment string
 	Config      string
+}
+
+type Config struct {
+	lock sync.RWMutex
+
+	// The HTTP client to use.
+	HttpClient *http.Client
+
+	// MinRetryWait is used to control the minimum time to wait before retrying when
+	// a 5XX error occurs. Defaults to 1000 milliseconds
+	MinRetryWait time.Duration
+
+	// MaxRetryWait controls the maximum time to wait before retrying after a 5XX error.
+	// Defaults to 1500 milliseconds.
+	MaxRetryWait time.Duration
+
+	// MaxRetries controls the maximum number of times to retry when a 5xx error occurs.
+	// To disable retries, set to 0
+	MaxRetries int
+
+	// Timeout is for setting a custom timeout in the HttpClient
+	Timeout time.Duration
+
+	// If there is something misconfigured, this will be the error
+	Error error
+
+	// Limiter is the rate limiter used by the client. If this is nil, no limit will be set.
+	Limiter *rate.Limiter
+}
+
+func DefaultConfig() *Config {
+	return &Config{}
+}
+
+type wrappingFuncHandler func(operation, path string) string
+
+// Client is the client to the Doppler API. Create with NewClient
+type Client struct {
+	lock                sync.RWMutex
+	address             *url.URL
+	config              *Config
+	token               string
+	headers             http.Header
+	wrappingFuncHandler wrappingFuncHandler
+}
+
+type Workplace struct {
+	Name         string `json:"name"`
+	BillingEmail string `json:"billing_email"`
+}
+
+func (c *Client) GetWorkplace() (Workplace, error) {
+	return Workplace{}, ErrNotImplemented
+}
+
+type ActivityLog struct {
+	Id          string
+	Text        string
+	Html        string
+	User        User
+	Project     string
+	Environment string
+	Config      string
+	CreatedAt   time.Time
+	Diff        Diff
+}
+
+type User struct {
+	Email         string `json:"email"`
+	name          string `json:"name"`
+	ProfileImgUrl string `json:"profile_image_url"`
+}
+
+type Diff struct {
+	Name    string
+	Added   []string
+	Removed []string
+	Updated []string
+}
+
+func (c *Client) GetActivityLogs() ([]ActivityLog, error) {
+	return nil, ErrNotImplemented
+}
+
+func (c *Client) GetActivityLog(id string) (ActivityLog, error) {
+	return ActivityLog{}, ErrNotImplemented
 }
