@@ -1,6 +1,6 @@
 # Doppler-Go
 
-An unofficial Go wrapper for the [https://docs.doppler.com/reference#download](Doppler API)
+An unofficial Go wrapper for the [Doppler API](https://docs.doppler.com/reference#download)
 
 
 ## Installation
