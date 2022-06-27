@@ -34,7 +34,8 @@ type Doppler struct {
 	Config      string
 }
 
-type Config struct {
+// ClientConfig is created to configure the client in order to access Doppler.
+type ClientConfig struct {
 	lock sync.RWMutex
 
 	// The HTTP client to use.
