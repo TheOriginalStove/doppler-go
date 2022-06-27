@@ -1,5 +1,5 @@
 // package doppler provices the bindings for the Doppler REST APIs.
-package doppler
+package dopplergo
 
 import (
 	"net/http"
@@ -68,23 +68,9 @@ func DefaultConfig() *Config {
 
 type wrappingFuncHandler func(operation, path string) string
 
-// Client is the client to the Doppler API. Create with NewClient
-type Client struct {
-	lock                sync.RWMutex
-	address             *url.URL
-	config              *Config
-	token               string
-	headers             http.Header
-	wrappingFuncHandler wrappingFuncHandler
-}
-
 type Workplace struct {
 	Name         string `json:"name"`
 	BillingEmail string `json:"billing_email"`
-}
-
-func (c *Client) GetWorkplace() (Workplace, error) {
-	return Workplace{}, ErrNotImplemented
 }
 
 type ActivityLog struct {
@@ -101,7 +87,7 @@ type ActivityLog struct {
 
 type User struct {
 	Email         string `json:"email"`
-	name          string `json:"name"`
+	Name          string `json:"name"`
 	ProfileImgUrl string `json:"profile_image_url"`
 }
 
@@ -112,10 +98,27 @@ type Diff struct {
 	Updated []string
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+// Client is the client to the Doppler API. Create with NewClient
+type Client struct {
+	lock                sync.RWMutex
+	address             *url.URL
+	config              *Config
+	token               string
+	headers             http.Header
+	wrappingFuncHandler wrappingFuncHandler
+}
+
+// GetActivityLogs will take
 func (c *Client) GetActivityLogs() ([]ActivityLog, error) {
 	return nil, ErrNotImplemented
 }
 
 func (c *Client) GetActivityLog(id string) (ActivityLog, error) {
 	return ActivityLog{}, ErrNotImplemented
+}
+
+func (c *Client) GetWorkplace() (Workplace, error) {
+	return Workplace{}, ErrNotImplemented
 }

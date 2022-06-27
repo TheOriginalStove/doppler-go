@@ -1,4 +1,4 @@
-package doppler
+package dopplergo
 
 import "errors"
 
